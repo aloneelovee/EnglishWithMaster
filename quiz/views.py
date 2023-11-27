@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 from django.db.models import IntegerField
 from django.db.models import Sum, Case, When, Count
 from django.http import JsonResponse
@@ -9,9 +8,9 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView,
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from .models import Category, UserAnswer
-from .serializers import CategoryListSerializers, CategorySerializer, UserAnswerSerializers, SendEmailSerializer
+from .serializers import CategoryListSerializers, CategorySerializer, UserAnswerSerializers, SendEmailSerializer, \
+    FeedbackSerializers
 from .tasks import send_email_customer
 
 
@@ -112,3 +111,23 @@ class UserAnswerStatistics(APIView):
             return JsonResponse({}, safe=False)
 
         return JsonResponse(statistics, safe=False)
+
+
+class FeedbackAPIView(GenericAPIView):
+    serializer_class = FeedbackSerializers
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            email = serializer.validated_data.get('email')
+            description = serializer.validated_data.get('description')
+            name = serializer.validated_data.get('name')
+            phone = serializer.validated_data.get('phone')
+
+            send_email_customer.delay(email, description, name, phone)
+        except Exception as e:
+            return Response({'success': False, 'message': str(e)})
+        return Response({'success': True, 'message': 'You message successfully sent!'})
+

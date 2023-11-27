@@ -11,10 +11,9 @@ def send_email_customer(email, message, name, phone):
     msg = f'''
     {email}, {message}, {name}, {phone}
     '''
-    print(msg)
     send_mail(
         subject="Quiz",
-        message=msg,
+        message=message,
         from_email=os.getenv("EMAIL_HOST_USER"),
         recipient_list=[os.getenv("EMAIL_HOST_USER")],
     )

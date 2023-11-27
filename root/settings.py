@@ -126,9 +126,9 @@ SWAGGER_SETTINGS = {
     'DEFAULT_INFO': 'import.path.to.urls.api_info',
     'USE_SESSION_AUTH': True,
     'SECURITY_DEFINITIONS': {
-        'basic': {
-            'type': 'basic'
-        },
+        # 'basic': {
+        #     'type': 'basic'
+        # },
         'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',

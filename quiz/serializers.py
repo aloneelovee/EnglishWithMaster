@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Question, Choice, UserAnswer
+from .models import Category, Question, Choice, UserAnswer, Feedback
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -74,3 +74,9 @@ class UserAnswerModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnswer
         fields = '__all__'
+
+
+class FeedbackSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['name', 'email', 'description', 'phone']
